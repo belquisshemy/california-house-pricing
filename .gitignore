@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+env/
+
+# Data files
+data/raw/
+data/processed/
+*.csv
+*.xlsx
+
+# Model files
+models/*.pkl
+models/*.h5
+models/*.joblib
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
