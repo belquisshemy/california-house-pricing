@@ -9,7 +9,7 @@ data/processed/
 *.xlsx
 
 # Model files
-models/*.pkl
+#models/*.pkl
 models/*.h5
 models/*.joblib
 
