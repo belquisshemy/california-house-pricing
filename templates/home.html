@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>California Housing Price Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; padding: 25px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #predictionResult {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e9f7ef;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            border: 1px solid #d4edda;
+        }
+        #predictionResult.error {
+            background-color: #f8d7da;
+            color: #dc3545;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Predict California Housing Price</h1>
+        <form id="predictionForm">
+            <label for="MedInc">Median Income (MedInc):</label>
+            <input type="number" id="MedInc" name="MedInc" step="any" required>
+
+            <label for="HouseAge">House Age:</label>
+            <input type="number" id="HouseAge" name="HouseAge" required>
+
+            <label for="AveRooms">Average Rooms (AveRooms):</label>
+            <input type="number" id="AveRooms" name="AveRooms" step="any" required>
+
+            <label for="AveBedrms">Average Bedrooms (AveBedrms):</label>
+            <input type="number" id="AveBedrms" name="AveBedrms" step="any" required>
+
+            <label for="Population">Population:</label>
+            <input type="number" id="Population" name="Population" required>
+
+            <label for="AveOccup">Average Occupancy (AveOccup):</label>
+            <input type="number" id="AveOccup" name="AveOccup" step="any" required>
+
+            <label for="Latitude">Latitude:</label>
+            <input type="number" id="Latitude" name="Latitude" step="any" required>
+
+            <label for="Longitude">Longitude:</label>
+            <input type="number" id="Longitude" name="Longitude" step="any" required>
+
+            <button type="submit">Get Prediction</button>
+        </form>
+
+        <div id="predictionResult">
+            Prediction will appear here...
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                // Ensure numerical inputs are parsed as numbers.
+                // If a number field is empty, formData.entries() might give an empty string.
+                // Convert to null or handle as per your backend's expectation for missing values.
+                // Here, we'll send it as a number or null if empty.
+                if (value === "") {
+                    data[key] = null; // Or undefined, depending on how you want to handle empty number fields
+                } else {
+                    data[key] = parseFloat(value);
+                }
+            }
+            
+            const resultDiv = document.getElementById('predictionResult');
+            resultDiv.classList.remove('error'); // Clear previous error styling
+            resultDiv.innerText = "Predicting...";
+
+
+            try {
+                const response = await fetch('/predict_api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const predictedPrice = result.prediction;
+                
+                const formattedPrice = parseFloat(predictedPrice).toFixed(2);
+                resultDiv.innerText = `Predicted Housing Price: $${formattedPrice}`;
+            } catch (error) {
+                console.error('Error during prediction:', error);
+                resultDiv.innerText = `Error: ${error.message}`;
+                resultDiv.classList.add('error'); // Add error styling
+            }
+        });
+    </script>
+</body>
+</html>
