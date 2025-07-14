@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy requirements first (for better caching)
 COPY requirements.txt .
 
-# Install dependencies
+# Install dependencies, --no-cache-dir Reduces image size
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
