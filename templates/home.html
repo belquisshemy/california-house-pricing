@@ -128,7 +128,12 @@
                 const result = await response.json();
                 const predictedPrice = result.prediction;
                 
-                const formattedPrice = Math.round(parseFloat(predictedPrice)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                const formattedPrice = predictedPrice.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2, // Always show at least 2 decimal places
+                    maximumFractionDigits: 2  // Never show more than 2 decimal places
+                });
                 resultDiv.innerText = `Predicted Housing Price: ${formattedPrice}`;
             } catch (error) {
                 console.error('Error during prediction:', error);
