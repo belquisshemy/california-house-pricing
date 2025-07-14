@@ -43,7 +43,7 @@ def predict_api():
     input_df = input_df[REQUIRED_FEATURES] # Enforce column order
 
     prediction = model.predict(input_df)[0] # [0] because predict returns an array
-    output = float(round(prediction, 2)) # Round to 2 decimal places
+    output = float(round(prediction*100000, 2)) # Round to 2 decimal places
 
     return jsonify(prediction=output) # Return the prediction as JSON
 
