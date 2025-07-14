@@ -131,7 +131,7 @@ To run this project on your local machine:
     (Note: You can choose any available host port to map to the container's internal port. Here, we map host port 8000 to container port 8080.)
 4.  Open your browser and navigate to `http://localhost:8000/`.
 
-### Test Cases for Prediction
+## Test Cases for Prediction
 
 To test the model's predictions, you can use the following sample data:
 
