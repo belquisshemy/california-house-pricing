@@ -81,6 +81,7 @@ The application is deployed using a modern cloud-native approach.
     - `RUN pip install -r requirements.txt`: Installs all Python dependencies inside the container.
     - `EXPOSE $PORT`: Informs Docker that the app listens on a dynamically assigned port.
     - `CMD gunicorn --workers=4 --bind 0.0.0.0:$PORT app:app`: Defines the command to run the Gunicorn server when the container starts.
+      ![Docker image running](Dockerize_Cal.png)
 
 ## Live Application
 
