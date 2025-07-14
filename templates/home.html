@@ -128,7 +128,7 @@
                 const result = await response.json();
                 const predictedPrice = result.prediction;
                 
-                const formattedPrice = Math.round(parseFloat(predictedPrice) * 100000).toLocaleString('en-US');
+                const formattedPrice = Math.round(parseFloat(predictedPrice)).toLocaleString('en-US');
                 resultDiv.innerText = `Predicted Housing Price: ${formattedPrice}`;
             } catch (error) {
                 console.error('Error during prediction:', error);
