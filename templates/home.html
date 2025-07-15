@@ -9,14 +9,27 @@
         .container { max-width: 600px; margin: auto; padding: 25px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #333; margin-bottom: 30px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .input-group { margin-bottom: 20px; }
+        .range-info { font-size: 12px; color: #666; margin-bottom: 5px; }
         input[type="number"] {
             width: calc(100% - 22px);
             padding: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            box-sizing: border-box;
             font-size: 16px;
+        }
+        input[type="number"]:invalid {
+            border-color: #dc3545;
+        }
+        input[type="number"]:valid {
+            border-color: #28a745;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
         button {
             background-color: #007bff;
@@ -32,6 +45,10 @@
         }
         button:hover {
             background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
         }
         #predictionResult {
             margin-top: 25px;
@@ -49,37 +66,94 @@
             color: #dc3545;
             border-color: #f5c6cb;
         }
+        .validation-info {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .validation-info h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .validation-info ul {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Predict California Housing Price</h1>
+        
+        <div class="validation-info">
+            <h3>Input Guidelines:</h3>
+            <ul>
+                <li>All fields are required and must be within realistic ranges</li>
+                <li>Average Bedrooms must be less than Average Rooms</li>
+                <li>House Age cannot be negative</li>
+                <li>Population must be a reasonable value for California districts</li>
+            </ul>
+        </div>
+        
         <form id="predictionForm">
-            <label for="MedInc">Median Income (MedInc):</label>
-            <input type="number" id="MedInc" name="MedInc" step="any" required>
+            <div class="input-group">
+                <label for="MedInc">Median Income (MedInc):</label>
+                <div class="range-info">Range: 0.5 : 20.0 (in tens of thousands)</div>
+                <input type="number" id="MedInc" name="MedInc" step="0.1" min="0.5" max="15.0" required>
+                <div class="error-message" id="MedInc-error"></div>
+            </div>
 
-            <label for="HouseAge">House Age:</label>
-            <input type="number" id="HouseAge" name="HouseAge" required>
+            <div class="input-group">
+                <label for="HouseAge">House Age:</label>
+                <div class="range-info">Range: 0 : 55 years</div>
+                <input type="number" id="HouseAge" name="HouseAge" min="0" max="52" required>
+                <div class="error-message" id="HouseAge-error"></div>
+            </div>
 
-            <label for="AveRooms">Average Rooms (AveRooms):</label>
-            <input type="number" id="AveRooms" name="AveRooms" step="any" required>
+            <div class="input-group">
+                <label for="AveRooms">Average Rooms (AveRooms):</label>
+                <div class="range-info">Range: 1.0 : 15.0 rooms per household</div>
+                <input type="number" id="AveRooms" name="AveRooms" step="0.1" min="2.0" max="15.0" required>
+                <div class="error-message" id="AveRooms-error"></div>
+            </div>
 
-            <label for="AveBedrms">Average Bedrooms (AveBedrms):</label>
-            <input type="number" id="AveBedrms" name="AveBedrms" step="any" required>
+            <div class="input-group">
+                <label for="AveBedrms">Average Bedrooms (AveBedrms):</label>
+                <div class="range-info">Range: 0.0 : 3.0 bedrooms per household</div>
+                <input type="number" id="AveBedrms" name="AveBedrms" step="0.1" min="0.5" max="3.0" required>
+                <div class="error-message" id="AveBedrms-error"></div>
+            </div>
 
-            <label for="Population">Population:</label>
-            <input type="number" id="Population" name="Population" required>
+            <div class="input-group">
+                <label for="Population">Population:</label>
+                <div class="range-info">Range: 100 : 40,000 people in district</div>
+                <input type="number" id="Population" name="Population" min="100" max="35000" required>
+                <div class="error-message" id="Population-error"></div>
+            </div>
 
-            <label for="AveOccup">Average Occupancy (AveOccup):</label>
-            <input type="number" id="AveOccup" name="AveOccup" step="any" required>
+            <div class="input-group">
+                <label for="AveOccup">Average Occupancy (AveOccup):</label>
+                <div class="range-info">Range: 1.0 : 10.0 people per household</div>
+                <input type="number" id="AveOccup" name="AveOccup" step="0.1" min="1.0" max="10.0" required>
+                <div class="error-message" id="AveOccup-error"></div>
+            </div>
 
-            <label for="Latitude">Latitude:</label>
-            <input type="number" id="Latitude" name="Latitude" step="any" required>
+            <div class="input-group">
+                <label for="Latitude">Latitude:</label>
+                <div class="range-info">Range: 32.5 : 42.0 (California bounds)</div>
+                <input type="number" id="Latitude" name="Latitude" step="0.01" min="32.5" max="42.0" required>
+                <div class="error-message" id="Latitude-error"></div>
+            </div>
 
-            <label for="Longitude">Longitude:</label>
-            <input type="number" id="Longitude" name="Longitude" step="any" required>
+            <div class="input-group">
+                <label for="Longitude">Longitude:</label>
+                <div class="range-info">Range: -124.5 : -114.0 (California bounds)</div>
+                <input type="number" id="Longitude" name="Longitude" step="0.01" min="-124.5" max="-114.0" required>
+                <div class="error-message" id="Longitude-error"></div>
+            </div>
 
-            <button type="submit">Get Prediction</button>
+            <button type="submit" id="submitBtn">Get Prediction</button>
         </form>
 
         <div id="predictionResult">
@@ -88,28 +162,89 @@
     </div>
 
     <script>
+        // Real-time validation
+        function validateField(field, value) {
+            const errorDiv = document.getElementById(field + '-error');
+            const input = document.getElementById(field);
+            
+            // Clear previous error
+            errorDiv.textContent = '';
+            input.style.borderColor = '#ccc';
+            
+            // Custom validation logic
+            if (field === 'AveBedrms' && value) {
+                const aveRooms = parseFloat(document.getElementById('AveRooms').value);
+                const aveBedrms = parseFloat(value);
+                
+                if (aveRooms && aveBedrms >= aveRooms) {
+                    errorDiv.textContent = 'Average Bedrooms must be less than Average Rooms';
+                    input.style.borderColor = '#dc3545';
+                    return false;
+                }
+            }
+            
+            if (field === 'AveRooms' && value) {
+                const aveRooms = parseFloat(value);
+                const aveBedrms = parseFloat(document.getElementById('AveBedrms').value);
+                
+                if (aveBedrms && aveBedrms >= aveRooms) {
+                    const bedrmError = document.getElementById('AveBedrms-error');
+                    bedrmError.textContent = 'Average Bedrooms must be less than Average Rooms';
+                    document.getElementById('AveBedrms').style.borderColor = '#dc3545';
+                    return false;
+                } else if (aveBedrms) {
+                    // Clear bedroom error if it's now valid
+                    const bedrmError = document.getElementById('AveBedrms-error');
+                    bedrmError.textContent = '';
+                    document.getElementById('AveBedrms').style.borderColor = '#28a745';
+                }
+            }
+            
+            return true;
+        }
+        
+        // Add event listeners for real-time validation
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                validateField(this.id, this.value);
+            });
+        });
+        
         document.getElementById('predictionForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             const form = event.target;
             const formData = new FormData(form);
             const data = {};
+            let hasErrors = false;
+            
+            // Validate all fields
             for (let [key, value] of formData.entries()) {
-                // Ensure numerical inputs are parsed as numbers.
-                // If a number field is empty, formData.entries() might give an empty string.
-                // Convert to null or handle as per your backend's expectation for missing values.
-                // Here, we'll send it as a number or null if empty.
                 if (value === "") {
-                    data[key] = null; // Or undefined, depending on how you want to handle empty number fields
+                    data[key] = null;
+                    hasErrors = true;
                 } else {
                     data[key] = parseFloat(value);
+                    if (!validateField(key, value)) {
+                        hasErrors = true;
+                    }
                 }
             }
             
+            if (hasErrors) {
+                const resultDiv = document.getElementById('predictionResult');
+                resultDiv.classList.add('error');
+                resultDiv.innerText = "Please fix the validation errors above before submitting.";
+                return;
+            }
+            
             const resultDiv = document.getElementById('predictionResult');
-            resultDiv.classList.remove('error'); // Clear previous error styling
+            resultDiv.classList.remove('error');
             resultDiv.innerText = "Predicting...";
-
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
 
             try {
                 const response = await fetch('/predict_api', {
@@ -120,25 +255,28 @@
                     body: JSON.stringify(data)
                 });
 
+                const result = await response.json();
+                
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    throw new Error(result.error || `HTTP error! status: ${response.status}`);
                 }
 
-                const result = await response.json();
                 const predictedPrice = result.prediction;
                 
                 const formattedPrice = predictedPrice.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD',
-                    minimumFractionDigits: 2, // Always show at least 2 decimal places
-                    maximumFractionDigits: 2  // Never show more than 2 decimal places
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 });
                 resultDiv.innerText = `Predicted Housing Price: ${formattedPrice}`;
             } catch (error) {
                 console.error('Error during prediction:', error);
                 resultDiv.innerText = `Error: ${error.message}`;
-                resultDiv.classList.add('error'); // Add error styling
+                resultDiv.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Prediction';
             }
         });
     </script>
