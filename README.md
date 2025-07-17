@@ -8,8 +8,8 @@ The goal of this project is to build a robust model capable of predicting median
 
 ## Demo Screenshots
 
-![App Interface](Cal-App-Interface.png)
-![Prediction Results](Cal-Predictions.png)
+![App Interface](Cal_demo_app.png)
+![Prediction Results](demo_result_app.png)
 
 ## Analysis Notebook
 
